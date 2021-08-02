@@ -1,0 +1,338 @@
+<html>
+<head>
+<script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+<style>
+body {
+  background-color: #faf1d0;
+  background-image: url(animalx.jpg);
+  background-repeat: no-repeat;
+  font-family: 'Roboto', sans-serif;
+}
+
+#game {
+  float: clear;
+}
+
+.red-text {
+  color: #E71D36;
+}
+
+.incorrect {
+  color: #af7771;
+}
+
+.correct {
+  color: #000000;
+}
+
+#question {
+  font-size: 10em;
+  color: #F45B69;
+}
+
+#play {
+  font-size: 10em;
+  background-color: #114B5F;
+  color: white;
+}
+
+#answer {
+  font-size: 10em;
+  background-color: #E4FDE1;
+  width: 50%;
+  opacity: 0.3;
+  border-radius: 5px;
+  border-bottom: 4px solid;
+  color: #456990;
+}
+
+#answer:focus {
+  background-color: ;
+  width: 50%;
+  color: #456990;
+  border: none;
+}
+
+#result {
+  font-size: 2.5em;
+  border: dashed;
+  margin-left: 10%;
+  float: right;
+  margin-right: 50%;
+  margin-top: 1%;
+}
+
+#timer {
+  font-size: 10em;
+}
+
+#timerBar {
+ 
+  
+}
+
+#prize {  
+  font-size: 2.5em;
+}
+
+.styled-table {
+    border-collapse: collapse;
+    margin: 25px 0;
+    font-size: 0.9em;
+    font-family: sans-serif;
+    min-width: 400px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
+.styled-table thead tr {
+    background-color: #009879;
+    color: #ffffff;
+    text-align: left;
+}
+.styled-table th,
+.styled-table td {
+    padding: 12px 15px;
+}
+
+.styled-table tbody tr {
+    border-bottom: 1px solid #dddddd;
+}
+
+.styled-table tbody tr:nth-of-type(even) {
+    background-color: #f3f3f3;
+}
+
+.styled-table tbody tr:last-of-type {
+    border-bottom: 2px solid #009879;
+}
+
+.styled-table tbody tr.active-row {
+    font-weight: bold;
+    color: #009879;
+}
+
+#summary {  
+  font-size: 1em;
+  border: dashed;  
+  cell-padding: 1em;
+  cellspacing: 1em;
+
+}
+
+.sec0 {
+  width: 0%;
+}
+
+.sec1 {
+  width: 10%;
+}
+
+.sec2 {
+  width: 20%;
+}
+
+.sec3 {
+  width: 30%;
+}
+
+.sec4 {
+  width: 40%;
+}
+
+.sec5 {
+  width: 50%;
+}
+
+.sec6 {
+  width: 60%;
+}
+
+.sec7 {
+  width: 70%;
+}
+
+.sec8 {
+  width: 80%;
+}
+
+.sec9 {
+  width: 90%;
+}
+
+.sec10 {
+  width: 100%;
+}
+</style>
+</head>
+
+<body>
+<div class="container-fluid">
+
+
+  <div id="controls">
+    <button onclick="startGame(); return false;" class="btn btn-default" id="play">Play Game!</button><span id="timer"></span><span id="result"></span>
+   
+
+  </div>
+
+  <div id="game">
+
+    <span id="question"></span>
+    <input type="number" id="answer">
+                             
+</div>
+
+ <div id="prize">
+  
+</div>
+
+                           
+</div>
+<script>
+var num1;
+var num2;
+var product;
+var numCorrect = 0;
+var numIncorrect = 0;
+var seconds = 60;
+var timeCount = seconds*4;
+var intId = -1;
+var questions = 0;
+var questionTracker = new Array();
+
+function startGame() {
+  $("#answer").val("");
+  newQuestion();
+  timeCount = seconds*4;
+  numCorrect = 0;
+  numIncorrect = 0;
+  questions = 0;
+  questionTracker = new Array();
+  $("#result").hide();
+  $("#prize").hide();
+  $("#play").fadeOut(1000, function() {
+    $("#timer").show();
+    $("#game").show();
+      $("#answer").focus();
+  $("#answer").click();
+
+    // $("#timeBar").fadeOut(10000, "linear" function(){});
+    //$("#timerBar").hide();
+  });
+
+  intId = setInterval(timed, 250);
+}
+
+$('#answer').on('keypress', function(e) {
+  console.log('key pressed is '+e);
+  if (e.which == 13) {
+    checkAnswer();
+    return false; //<---- Add this line
+  }
+});
+
+function checkAnswer() {
+  var ans = parseInt($("#answer").val());
+  if (ans === product / num1) {
+    numCorrect++;
+    $("#result").show();
+    $("#result").html("Correct: " + numCorrect + " Incorrect: "+numIncorrect);
+    $("#answer").val("");
+    questionTracker[questions++]="<div class='tracker correct'>"+product+"÷"+num1+"="+ans+"</div><br/>";
+    newQuestion();
+  }else{
+  	  numIncorrect++;
+  	  $("#result").show();
+  	  $("#result").html("Correct: " + numCorrect + " Incorrect: "+numIncorrect +"<br/>Answer was "+product/num1);
+  	  $("#answer").val("");
+  	  questionTracker[questions++]="<div class='tracker correct'>"+product+"÷"+num1+"=<span class='incorrect'><strike>"+ans+"</strike></span> "+product/num1+"</div><br/>";
+  	  setTimeout(newQuestion, 1000);  	  
+  }
+}
+$(document).ready(function() {
+  $("#answer").hide();
+  $("#result").hide();
+  $("#timer").hide();
+  //seed();
+  //$("#timerBar").hide();
+});
+
+function timed() {
+  var secs = Math.floor(timeCount/4)%60;
+  var mins = Math.floor(timeCount/240);
+  $("#timer").text(mins + ":" + formatTime(secs));
+  if (timeCount === 0) {
+    endGame();
+  } else if (timeCount <= 3*4) {
+    $("#timer").addClass("red-text");
+  }
+  timeCount--;
+  var timeProgress = "" + (timeCount/480)*100;
+ // var prevClass = "sec" + ((Math.ceil(timeCount / 12)) + 1);
+ // var currClass = "sec" + (Math.ceil(timeCount / 12));
+ // $("#timerBar").removeClass(prevClass);
+  //$("#timerBar").addClass(currClass);
+  $("#timerBar").css('width', timeProgress + "%"); //$("timerBar").removeClass("s10").addClass("s0", 3000, "linear");
+//  console.log(timeProgress + " " + prevClass + " " + currClass);
+  // $( "#timerBar").css("width", timeProgress + "%;");
+  //$("#timerBar").val("" + 10*timeCount);
+}
+
+function newQuestion() {
+
+  num1 = Math.round(Math.random() * 10);
+  num2 = Math.round(Math.random() * 10);
+  product = num1 * num2;
+  $("#question").text(product + "÷" + num1 + "=");
+  $("#answer").show();
+}
+
+function endGame() {
+  $("#game").hide();
+  $("#timer").hide();
+  showPrize();
+  //$("#timerBar").hide();
+  $("#timer").removeClass("red-text");
+  clearInterval(intId);
+  $("#play").fadeIn(1000, function() {})
+
+}
+
+function formatTime(toFormat) {
+  if (toFormat < 10) {
+    return "0" + toFormat;
+  }
+  return toFormat;
+}
+
+function showPrize() {
+  $("#prize").show();
+  var block ="<table class='styled-table' id='summary'><tr>";
+  block+="<thead><tr><th colspan='5'>Summary</th></tr></thead>";
+  for(i=0;i<questionTracker.length;i++){
+  	  block+="<td>"+questionTracker[i]+"</td>";
+	  if((i+1)%5==0) {
+		block+="</tr><tr>";
+	  }
+  }
+  block+="</tr></table>";
+  $("#prize").html(block);
+}
+
+function seed(){
+	for(i=0;i<50;i++){
+	num1=Math.round(Math.random() * 10);
+	num2=Math.round(Math.random() * 10);
+	ans=num1*num2;	
+	var answer = "<span class='tracker correct'>"+num1+"x"+num2+"="+ans+"</span>";
+	questionTracker[i]=answer;
+	}
+	showPrize();
+}
+
+
+</script>
+
+
+</body>
+</html>

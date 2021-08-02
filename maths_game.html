@@ -1,0 +1,259 @@
+<html>
+<head>
+<script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+<style>
+body {
+  background-color: #028090;
+  font-family: 'Roboto', sans-serif;
+}
+
+#game {
+  float: clear;
+}
+
+.red-text {
+  color: #E71D36;
+}
+
+#question {
+  font-size: 10em;
+  color: #F45B69;
+}
+
+#play {
+  font-size: 10em;
+  background-color: #114B5F;
+  color: white;
+}
+
+#answer {
+  font-size: 10em;
+  background-color: #E4FDE1;
+  width: 50%;
+  opacity: 0.3;
+  border-radius: 5px;
+  border-bottom: 4px solid;
+  color: #456990;
+}
+
+#answer:focus {
+  background-color: ;
+  width: 50%;
+  color: #456990;
+  border: none;
+}
+
+#result {
+  font-size: 5em;
+  border: dashed;
+  margin-left: 10%;
+}
+
+#timer {
+  font-size: 10em;
+}
+
+#timerBar {
+ 
+  
+}
+
+#prize {
+  font-size: 10em;
+  color: #F45B69;
+}
+
+.sec0 {
+  width: 0%;
+}
+
+.sec1 {
+  width: 10%;
+}
+
+.sec2 {
+  width: 20%;
+}
+
+.sec3 {
+  width: 30%;
+}
+
+.sec4 {
+  width: 40%;
+}
+
+.sec5 {
+  width: 50%;
+}
+
+.sec6 {
+  width: 60%;
+}
+
+.sec7 {
+  width: 70%;
+}
+
+.sec8 {
+  width: 80%;
+}
+
+.sec9 {
+  width: 90%;
+}
+
+.sec10 {
+  width: 100%;
+}
+</style>
+</head>
+
+<body>
+<div class="container-fluid">
+
+  <div id="controls">
+    <button onclick="startGame(); return false;" class="btn btn-default" id="play">Play Game!</button><span id="timer"></span><span id="result"></span>
+   
+
+  </div>
+
+  <div id="game">
+
+    <span id="question"></span>
+    <input type="number" id="answer">
+                             
+</div>
+                           
+ <div>
+  
+   <span id="prize"></span>
+</div>
+
+</div>
+<script>
+var num1;
+var num2;
+var numCorrect = 0;
+var timeCount = 60*4;
+var intId = -1;
+
+function startGame() {
+  $("#answer").val("");
+  newQuestion();
+  timeCount = 60*4;
+  numCorrect = 0;
+  $("#result").hide();
+  $("#prize").hide();
+  $("#play").fadeOut(1000, function() {
+    $("#timer").show();
+    $("#game").show();
+      $("#answer").focus();
+  $("#answer").click();
+
+    // $("#timeBar").fadeOut(10000, "linear" function(){});
+    //$("#timerBar").hide();
+  });
+
+  intId = setInterval(timed, 250);
+}
+
+$('#answer').on('keypress', function(e) {
+  console.log('key pressed is '+e);
+  if (e.which == 13) {
+    checkAnswer();
+    return false; //<---- Add this line
+  }
+});
+
+function checkAnswer() {
+  var ans = parseInt($("#answer").val());
+  if (ans === num1 * num2) {
+    numCorrect++;
+    $("#result").show();
+    $("#result").text("Correct:" + numCorrect);
+    $("#answer").val("");
+    newQuestion();
+  }else{
+  	  $("#result").show();
+  	  $("#result").text("Try again");
+  	  $("#answer").val("");
+  }
+}
+$(document).ready(function() {
+  $("#answer").hide();
+  $("#result").hide();
+  $("#timer").hide();
+  //$("#timerBar").hide();
+});
+
+function timed() {
+  var secs = Math.floor(timeCount/4)%60;
+  var mins = Math.floor(timeCount/240);
+  $("#timer").text(mins + ":" + formatTime(secs));
+  if (timeCount === 0) {
+    endGame();
+  } else if (timeCount <= 3*4) {
+    $("#timer").addClass("red-text");
+  }
+  timeCount--;
+  var timeProgress = "" + (timeCount/480)*100;
+ // var prevClass = "sec" + ((Math.ceil(timeCount / 12)) + 1);
+ // var currClass = "sec" + (Math.ceil(timeCount / 12));
+ // $("#timerBar").removeClass(prevClass);
+  //$("#timerBar").addClass(currClass);
+  $("#timerBar").css('width', timeProgress + "%"); //$("timerBar").removeClass("s10").addClass("s0", 3000, "linear");
+//  console.log(timeProgress + " " + prevClass + " " + currClass);
+  // $( "#timerBar").css("width", timeProgress + "%;");
+  //$("#timerBar").val("" + 10*timeCount);
+}
+
+function newQuestion() {
+
+  num1 = Math.round(Math.random() * 10);
+  num2 = Math.round(Math.random() * 10);
+  $("#question").text(num1 + "x" + num2 + "=");
+  $("#answer").show();
+}
+
+function endGame() {
+  $("#game").hide();
+  $("#timer").hide();
+  showPrize();
+  //$("#timerBar").hide();
+  $("#timer").removeClass("red-text");
+  clearInterval(intId);
+  $("#play").fadeIn(1000, function() {})
+
+}
+
+function formatTime(toFormat) {
+  if (toFormat < 10) {
+    return "0" + toFormat;
+  }
+  return toFormat;
+}
+
+function showPrize() {
+  $("#prize").show();
+  if(numCorrect == 0) {
+    $("#prize").text("No prize for you!");
+  }
+  else if(numCorrect > 10) {
+    $("#prize").text("You win a blue and green goose!");
+  }
+  else if(numCorrect > 20) {
+    $("#prize").text("You win a bar of soap!");
+  }
+  else if(numCorrect > 30) {
+    $("#prize").text("You win a sour cream and spinach pizza!");
+  }
+  else {
+    $("#prize").text("You win a polka-dotted bowling ball!");
+  }
+}
+</script>
+
+
+</body>
+</html>
